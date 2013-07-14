@@ -21,14 +21,27 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    SMLoginViewController *login = [[SMLoginViewController alloc] init];
-    [self presentViewController:login animated:NO completion:nil];
+    if (![PFUser currentUser]) {
+        SMLoginViewController *login = [[SMLoginViewController alloc] init];
+        login.delegate = self;
+        [self presentViewController:login animated:NO completion:nil];
+    }
+    else {
+        [self performSegueWithIdentifier:@"WelcomeToLobby" sender:self];
+    }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - PFLoginViewController
+
+- (void) logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
+    [self dismissViewControllerAnimated:NO completion:nil];
+    [self performSegueWithIdentifier:@"WelcomeToLobby" sender:nil];
 }
 
 @end
